@@ -1,6 +1,6 @@
 /*
  * Middleware that helps to take token out of Authorization header
- * 1. Checking for valid token (that is not expired
+ * 1. Checking for valid token (that is not expired)
  * 2. Take out the ID from the token, find the USER with that ID and
  * attaches that user to the req.user
  */
@@ -19,7 +19,7 @@ const authMiddleware = async (req, res, next) => {
   const [bearer, token] = authorization.split(" ");
 
   // 3. if bearer doesn't equal "Bearer" then show Unauthorized error
-  if (bearer !== "Bearer") {
+  if (bearer !== "Bearer" || token !== "") {
     throw new createError.Unauthorized("Not authorized");
   }
   // 4. check if the token is valid, if not, use try/catch that helps to catch an error
