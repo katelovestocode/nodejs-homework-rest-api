@@ -4,8 +4,20 @@ const getAllContacts = async (req, res, next) => {
   try {
     const { _id } = req.user;
 
+    if (req.query.favorite === "true") {
+      const contacts = await Contact.find({ owner: _id, favorite: true }, "", {
+        favorite: true,
+      });
+      res.json({
+        status: "success",
+        code: 200,
+        contacts,
+      });
+      return;
+    }
+
     // Pagination
-    const { page = 1, limit = 15 } = req.query;
+    const { page = 1, limit = 8 } = req.query;
     const skip = (page - 1) * limit;
 
     const contacts = await Contact.find({ owner: _id }, "", {
@@ -16,7 +28,7 @@ const getAllContacts = async (req, res, next) => {
     res.json({
       status: "success",
       code: 200,
-      contacts,
+      data: contacts,
     });
   } catch (error) {
     next(error);

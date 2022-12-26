@@ -5,7 +5,7 @@ const { controllerContacts } = require("../../controllers");
 const { authMiddleware } = require("../../middlewares");
 
 // =====================  GET ALL  =====================
-// using authMiddleware to verify that the owner(user) can get only thier contacts. 
+// using authMiddleware to verify that the owner(user) can get only thier contacts.
 // contacts that belong to specific user (with their id)
 router.get("/", authMiddleware, controllerContacts.getAllContacts);
 
