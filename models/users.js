@@ -63,8 +63,14 @@ const joiLoginSchema = Joi.object({
     .required(),
 });
 
+// PATCH SUBSCRIPTION JOI SCHEMA
+const subscriptionJoiSchema = Joi.object({
+  subscription: Joi.string().valid("starter", "pro", "business"),
+});
+
 module.exports = {
   User,
   joiRegistrationSchema,
   joiLoginSchema,
+  subscriptionJoiSchema,
 };

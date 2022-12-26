@@ -19,7 +19,7 @@ const authMiddleware = async (req, res, next) => {
   const [bearer, token] = authorization.split(" ");
 
   // 3. if bearer doesn't equal "Bearer" then show Unauthorized error
-  if (bearer !== "Bearer" || token !== "") {
+  if (bearer !== "Bearer") {
     throw new createError.Unauthorized("Not authorized");
   }
   // 4. check if the token is valid, if not, use try/catch that helps to catch an error

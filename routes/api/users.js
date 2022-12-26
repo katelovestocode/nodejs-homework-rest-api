@@ -18,4 +18,11 @@ router.get("/current", authMiddleware, controllerUsers.getCurrent);
 // Using authMiddleware to check if the user is logged-in
 router.get("/logout", authMiddleware, controllerUsers.logout);
 
+// =====================  UPDATE USER BY SUBSCRIPTION CATEGORY  ==================
+router.patch(
+  "/subscription",
+  authMiddleware,
+  controllerUsers.updateSubscription
+);
+
 module.exports = router;
