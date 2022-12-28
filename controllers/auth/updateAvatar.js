@@ -1,6 +1,7 @@
 const fs = require("fs/promises");
 const path = require("path");
 const { User } = require("../../models/users");
+const Jimp = require("jimp");
 
 const avatarsDir = path.join(__dirname, "../../", "public", "avatars");
 
@@ -20,6 +21,17 @@ const updateAvatar = async (req, res, next) => {
 
     // path for the final location of the avatar
     const resultUpload = path.join(avatarsDir, avatarNewName);
+
+    // process and crop an image with Jimp package
+    const img = await Jimp.read(tempUpload);
+    await img
+      .autocrop()
+      .cover(
+        250,
+        250,
+        Jimp.HORIZONTAL_ALIGN_CENTER || Jimp.VERTICAL_ALIGN_MIDDLE
+      )
+      .writeAsync(tempUpload);
 
     // move avatar from the temp folder into a destination folder or cloud
     await fs.rename(tempUpload, resultUpload);
