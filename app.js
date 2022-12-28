@@ -10,9 +10,14 @@ const app = express();
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 app.use(logger(formatsLogger));
-
-app.use(cors());
 app.use(express.json());
+
+// Cross-origin resource sharing (CORS) allows AJAX requests to skip the Same-origin policy and access resources from remote hosts.
+app.use(cors());
+
+// To serve static files such as images, CSS files, and JavaScript files, use the express.static built-in middleware function in Express.
+// This middleware tells express if there is request for the file, go to the folder "public", there will be no file in other folders
+app.use(express.static("public"));
 
 // CONTACTS ROUTER
 app.use("/api/contacts", contactsRouter);
