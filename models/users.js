@@ -1,5 +1,6 @@
 const { Schema, model } = require("mongoose");
 const Joi = require("joi");
+const handleMongooseError = require("../helpers");
 // const bcrypt = require("bcryptjs");
 
 // MANGOOSE SCHEMA
@@ -27,6 +28,14 @@ const userSchema = Schema(
       type: String,
       default: null,
     },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+      required: [true, "Verify token is required"],
+    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -40,6 +49,9 @@ const userSchema = Schema(
 // userSchema.methods.comparePassword = function (password) {
 //   return bcrypt.compareSync(password, this.password);
 // };
+
+// handle Mongoose errors
+userSchema.post("save", handleMongooseError);
 
 // MANGOOSE MODEL
 const User = model("user", userSchema);
@@ -72,9 +84,15 @@ const subscriptionJoiSchema = Joi.object({
   subscription: Joi.string().valid("starter", "pro", "business"),
 });
 
+// POST EMAIL REVERIFICATION JOI SCHEMA
+const reVerificationSchema = Joi.object({
+  email: Joi.string().email().required(),
+});
+
 module.exports = {
   User,
   joiRegistrationSchema,
   joiLoginSchema,
   subscriptionJoiSchema,
+  reVerificationSchema,
 };

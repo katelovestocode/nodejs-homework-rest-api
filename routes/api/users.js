@@ -30,6 +30,12 @@ router.patch(
   controllerUsers.updateAvatar
 );
 
+// =====================  GET VERIFY EMAIL  =====================
+router.get("/verify/:verificationToken", controllerUsers.verifyEmail);
+
+// =====================  REVERIFY EMAIL  =====================
+router.post("/verify", controllerUsers.reVerificationEmail);
+
 // =====================  LOGOUT  =====================
 // Using authMiddleware to check if the user is logged-in
 router.get("/logout", authMiddleware, controllerUsers.logout);
