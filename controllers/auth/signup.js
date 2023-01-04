@@ -3,6 +3,8 @@ const { joiRegistrationSchema } = require("../../models");
 const createError = require("http-errors");
 const bcrypt = require("bcryptjs");
 const gravatar = require("gravatar");
+const { v4 } = require("uuid");
+const sendEmail = require("../../services/sendgrid");
 
 const signup = async (req, res, next) => {
   try {
@@ -21,14 +23,23 @@ const signup = async (req, res, next) => {
       throw new createError.Conflict(`This ${email} email in use`);
     }
 
+    // create verificationToken using uuid
+    const verificationToken = v4();
+
     // set hashPassword using bcrypt
     const hashPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
     // get a random avatar when a new user signup
     const avatarURL = gravatar.url(email);
 
-    // save email, hashed password, subscription and avatar URL into database:
-    User.create({ email, password: hashPassword, subscription, avatarURL });
+    // save email, hashed password, subscription and avatar URL, verificationToken into database:
+    User.create({
+      email,
+      password: hashPassword,
+      subscription,
+      avatarURL,
+      verificationToken,
+    });
 
     // OR OPTION#2 Set hash password via methods in Schema
     // const newUser = new User({ email, password, subscription });
@@ -43,6 +54,17 @@ const signup = async (req, res, next) => {
     // } */
     // newUser.save();
 
+    // create body of the verification email to confirm email
+    const mail = {
+      to: email,
+      subject: "Confirmation of the registration",
+      html: `<a target=_blank href="http://localhost:3000/users/verify/${verificationToken}">Confirm your email</a>`,
+    };
+
+    // send email to confirm email once the user is created
+    await sendEmail(mail);
+
+    // Postman
     res.status(201).json({
       status: "success",
       code: 201,
@@ -51,6 +73,7 @@ const signup = async (req, res, next) => {
           email,
           password,
           subscription,
+          verificationToken,
         },
       },
     });

@@ -23,8 +23,10 @@ const login = async (req, res, next) => {
     // check if password is already in the database
     const checkPassword = bcrypt.compareSync(password, user.password);
 
-    if (!user || !checkPassword) {
-      throw new createError.Unauthorized(`Email or password are not found`);
+    if (!user || !checkPassword || !user.verify) {
+      throw new createError.Unauthorized(
+        `Either email or password are not found or email is not verified`
+      );
     }
 
     // // OPTION #2 Compare passwords using methods in Schema
