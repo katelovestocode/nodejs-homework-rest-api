@@ -4,7 +4,7 @@ const createError = require("http-errors");
 const bcrypt = require("bcryptjs");
 const gravatar = require("gravatar");
 const { v4 } = require("uuid");
-const sendEmail = require("../../sendgrid");
+const sendEmail = require("../../services/sendgrid");
 
 const signup = async (req, res, next) => {
   try {

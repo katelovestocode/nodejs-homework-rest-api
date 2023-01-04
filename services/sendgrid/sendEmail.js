@@ -10,7 +10,7 @@ const sendEmail = async (data) => {
   const email = {
     ...data,
     from: {
-      email: "anofficespace00@gmail.com",
+      email: "anoffice@gmail.com",
     },
   };
 

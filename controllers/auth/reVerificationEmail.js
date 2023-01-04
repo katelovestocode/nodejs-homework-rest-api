@@ -1,7 +1,7 @@
 const { reVerificationSchema } = require("../../models");
 const createError = require("http-errors");
 const { User } = require("../../models");
-const sendEmail = require("../../sendgrid");
+const sendEmail = require("../../services/sendgrid");
 
 const reVerificationEmail = async (req, res, next) => {
   try {
