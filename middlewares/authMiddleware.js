@@ -11,19 +11,26 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const { SECRET_KEY } = process.env;
 
-const authMiddleware = async (req, res, next) => {
-  // 1. getting the content from the Authorization header, and default value empty string
-  const { authorization = "" } = req.headers;
-
-  // 2. deviding two words by " ", and destructirisation of bearer and token
-  const [bearer, token] = authorization.split(" ");
-
-  // 3. if bearer doesn't equal "Bearer" then show Unauthorized error
-  if (bearer !== "Bearer") {
-    throw new createError.Unauthorized("Not authorized");
-  }
-  // 4. check if the token is valid, if not, use try/catch that helps to catch an error
+const authMiddleware = async (req, _, next) => {
   try {
+    // 1. getting the content from the Authorization header, and default value empty string
+    const { authorization = "" } = req.headers;
+
+    if (!authorization) {
+      next(
+        new Error("Please provide a token, no token in authorization header")
+      );
+    }
+
+    // 2. deviding two words by " ", and destructirisation of bearer and token
+    const [bearer, token] = authorization.split(" ");
+
+    // 3. if bearer doesn't equal "Bearer" then show Unauthorized error
+    if (bearer !== "Bearer") {
+      throw new createError.Unauthorized("Not authorized");
+    }
+    // 4. check if the token is valid, if not, use try/catch that helps to catch an error
+
     const { id } = jwt.verify(token, SECRET_KEY);
 
     // 5. if the token is valid, get the ID and find the user with that ID
@@ -33,6 +40,7 @@ const authMiddleware = async (req, res, next) => {
     }
     // 6. if we found a user with ID we have to attach it to the requested object
     req.user = user;
+    req.token = token;
 
     // 7. go to the next processor getCurrent
     next();
